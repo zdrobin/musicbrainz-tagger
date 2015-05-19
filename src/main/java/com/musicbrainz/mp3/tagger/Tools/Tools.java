@@ -20,7 +20,8 @@ public class Tools {
 	public static final ObjectMapper MAPPER = new ObjectMapper();
 	
 //	public static final File SAMPLE_SONG = new File(System.getProperty("user.dir") + "/src/main/resources/entertainer.mp3");
-	public static final File SAMPLE_SONG = new File("/home/tyler/Downloads/Nine Inch Nails - The Downward Spiral/05 Closer.mp3");
+	public static final File SAMPLE_SONG = new File(System.getProperty("user.dir") + "/src/main/resources/06 A Short Reprise for Mary Todd, Wh.mp3");
+//	public static final File SAMPLE_SONG = new File("/home/tyler/Downloads/Nine Inch Nails - The Downward Spiral/05 Closer.mp3");
 //	public static final File SAMPLE_SONG = new File("/home/tyler/Downloads/Feist/Let It Die/05 Leisure Suite.mp3");
 	public static JsonNode jsonToNode(String json) {
 

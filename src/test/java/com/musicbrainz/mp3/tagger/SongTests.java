@@ -13,7 +13,7 @@ import com.musicbrainz.mp3.tagger.Tools.Tools;
 public class SongTests extends TestCase {
 	
 	Song song;
-		
+	
 	@Before
 	public void setUp() {
 		song = Song.fetchSong(Tools.SAMPLE_SONG);
