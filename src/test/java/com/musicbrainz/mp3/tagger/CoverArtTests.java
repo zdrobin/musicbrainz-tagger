@@ -8,19 +8,16 @@ import org.junit.Before;
 
 import com.musicbrainz.mp3.tagger.Tools.CoverArt;
 import com.musicbrainz.mp3.tagger.Tools.Song;
+import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class CoverArtTests extends TestCase {
 
-	File songFile;
 	Song song;
-	CoverArt coverArt;
-	
-	
+	CoverArt coverArt;	
 	
 	@Before
 	public void setUp() {
-		songFile = new File("/home/tyler/Downloads/Nine Inch Nails - The Downward Spiral/05 Closer.mp3");
-		song = Song.fetchSong(songFile);
+		song = Song.fetchSong(Tools.SAMPLE_SONG);
 		coverArt = CoverArt.fetchCoverArt(song);
 	}
 	

@@ -90,26 +90,27 @@ public class Tagger {
 			StringBuilder s = new StringBuilder();
 
 			s.append("http://musicbrainz.org/ws/2/recording/?query=");
-			s.append("recording:" + Tools.replaceWhiteSpaceWithPercent(recording));
-			s.append("+artist:" + Tools.replaceWhiteSpaceWithPercent(artist));
-			s.append("+dur:" + duration);
+			s.append("recording:" + Tools.surroundWithQuotes(recording));
+			s.append(" AND artist:" + Tools.surroundWithQuotes(artist));
+			s.append(" AND dur:[" + (duration - 1500) + " TO " + (duration + 1500) + "]");
 
 			if (number != null) {
-				s.append("+number:" + number);
+				s.append(" AND number:" + number);
 			}
 
 			if (release != null) {
-				s.append("+release:" + Tools.replaceWhiteSpaceWithPercent(release));
+				s.append(" AND release:" + Tools.surroundWithQuotes(release));
 			}
 
 			if (date != null) {
-				s.append("+date:" + date);
+				s.append(" AND date:" + date + "*");
 			}
 
 			s.append("&limit=1");
 			s.append("&fmt=json");
 
-			return s.toString();
+			
+			return Tools.encodeURL(s.toString());
 
 		}
 
@@ -159,6 +160,8 @@ public class Tagger {
 
 		// Get the correct tag
 		ID3v1 id3 = getId3v1Tag(f);
+		
+//		Tagger.printId3v1Tags(f);
 
 		// Construct the query
 		Builder b = new MusicBrainzQuery.Builder(id3.getTitle(), id3.getArtist(), f.getLengthInMilliseconds());
@@ -234,7 +237,7 @@ public class Tagger {
 		} else if (f.hasId3v1Tag()) {
 			id3Tag = f.getId3v1Tag();
 		} else {
-			throw new NoSuchElementException("The track has id3 tags");
+			throw new NoSuchElementException("The track has no id3 tags");
 		}
 
 		return id3Tag;

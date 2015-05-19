@@ -8,25 +8,22 @@ import org.junit.Before;
 
 import com.musicbrainz.mp3.tagger.Tools.Song;
 import com.musicbrainz.mp3.tagger.Tools.Tagger;
+import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class SongTests extends TestCase {
 	
-	File songFile;
 	Song song;
-	
-	
-	
+		
 	@Before
 	public void setUp() {
-		songFile = new File("/home/tyler/Downloads/Nine Inch Nails - The Downward Spiral/05 Closer.mp3");
-		song = Song.fetchSong(songFile);
+		song = Song.fetchSong(Tools.SAMPLE_SONG);
 	}
 	
 	
 	public void testCreateQuery() {
 		
-		String query = Tagger.createQueryFromFile(songFile);
-		
+		String query = Tagger.createQueryFromFile(Tools.SAMPLE_SONG);
+		System.out.println(query);
 		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:Closer+artist:Nine%Inch%Nails+dur:372666+number:5+release:The%Downward%Spiral+date:1994&limit=1&fmt=json", 
 				query);
 		
