@@ -87,9 +87,10 @@ public class Tagger {
 		}
 
 		public String createQuery() {
+			
 			StringBuilder s = new StringBuilder();
-
 			s.append("http://musicbrainz.org/ws/2/recording/?query=");
+			
 			s.append("recording:" + Tools.surroundWithQuotes(recording));
 			s.append(" AND artist:" + Tools.surroundWithQuotes(artist));
 			s.append(" AND dur:[" + (duration - 1500) + " TO " + (duration + 1500) + "]");
@@ -105,12 +106,13 @@ public class Tagger {
 			if (date != null) {
 				s.append(" AND date:" + date + "*");
 			}
-
+			
+			
 			s.append("&limit=1");
 			s.append("&fmt=json");
 
 			
-			return Tools.encodeURL(s.toString());
+			return Tools.replaceWhiteSpace(s.toString());
 
 		}
 
@@ -157,7 +159,7 @@ public class Tagger {
 	}
 
 	public static String createQueryFromFile(Mp3File f) {
-
+		
 		// Get the correct tag
 		ID3v1 id3 = getId3v1Tag(f);
 		
