@@ -15,6 +15,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
+
 public class Tools {
 
 	public static final ObjectMapper MAPPER = new ObjectMapper();
@@ -104,6 +108,16 @@ public class Tools {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static String sha2FileChecksum(File file) {
+		HashCode hc = null;
+		try {
+			hc = Files.hash(file, Hashing.sha256());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return hc.toString();
 	}
 
 	

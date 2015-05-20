@@ -8,6 +8,8 @@ import org.codehaus.jackson.JsonNode;
 public class Song {
 
 	private JsonNode json;
+	
+	private String query;
 
 	/**
 	 * Give the prettified json response from musicbrainz
@@ -34,11 +36,20 @@ public class Song {
 	}
 
 	private Song(File f) {
-		json = Tagger.fetchMBRecordingJSONFromFile(f);
+		query = Tagger.createQueryFromFile(f);
+		json = Tagger.fetchMBRecordingJSONFromQuery(query);
 		
 		if (getFirstRecording() == null) {
 			throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.");
 		}
+	}
+	
+	/**
+	 * Fetches the MusicBrainz query for the song
+	 * @return query
+	 */
+	public String getQuery() {
+		return query;
 	}
 
 	private JsonNode getFirstRecording() {

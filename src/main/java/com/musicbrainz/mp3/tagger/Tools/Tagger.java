@@ -119,19 +119,16 @@ public class Tagger {
 
 	}
 
-
-
-	public static JsonNode fetchMBRecordingJSONFromFile(File f) {
-
-		String query = createQueryFromFile(f);		
-
+	public static JsonNode fetchMBRecordingJSONFromQuery(String query) {
+		
 		String res = Tools.httpGet(query);
 
 		JsonNode jsonNode = Tools.jsonToNode(res);
 
 		return jsonNode;
-
+		
 	}
+	
 
 	public static JsonNode fetchCoverImagesFromMBID(String releaseMBID) {
 
