@@ -21,12 +21,12 @@
   <groupId>com.github.tchoulihan</groupId>
   <artifactId>musicbrainz-tagger</artifactId>
   <version>1.0.2</version>
-  </dependency>
+</dependency>
 ```
 
 ## How to Use it
 ```java
-Song song = Song.fetchSong(path_to_song);
+Song song = Song.fetchSong("path/to/song");
 
 // Get the song MBID
 song.getRecordingMBID();
