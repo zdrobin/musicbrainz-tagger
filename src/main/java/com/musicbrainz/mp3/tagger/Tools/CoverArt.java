@@ -1,5 +1,7 @@
 package com.musicbrainz.mp3.tagger.Tools;
 
+import java.util.NoSuchElementException;
+
 import org.codehaus.jackson.JsonNode;
 
 public class CoverArt {
@@ -16,6 +18,10 @@ public class CoverArt {
 
 		private CoverArt(Song s) {
 			json = Tagger.fetchCoverImagesFromMBID(s.getReleaseMBID());
+			
+			if (json == null) {
+				throw new NoSuchElementException("No cover art found on coverartarchive.org");
+			}
 		}
 		
 		private JsonNode getFirstImageURL() {

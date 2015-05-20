@@ -24,43 +24,43 @@ public class SongTests extends TestCase {
 		
 		String query = Tagger.createQueryFromFile(Tools.SAMPLE_SONG);
 		System.out.println(query);
-		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:Closer+artist:Nine%Inch%Nails+dur:372666+number:5+release:The%Downward%Spiral+date:1994&limit=1&fmt=json", 
+		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:%22You%27re+Not+an+Airplane%22%20AND%20artist:%22Guided+By+Voices%22%20AND%20dur:[31900%20TO%2034900]%20AND%20number:20%20AND%20release:%22Bee+Thousand%22%20AND%20date:1994*&limit=1&fmt=json",
 				query);
 		
 	}
 	
 	public void testRecordingMBID() {
-		assertEquals("13dd61c7-ce73-4e97-9f0c-9f0e53144411", 
+		assertEquals("7d293a68-e869-41f4-9323-46f5b2487a42", 
 				song.getRecordingMBID());
 		
 	}
 	
 	public void testReleaseMBID() {
-		assertEquals("602af258-e647-48e2-9660-bd0c5c8f92bf", 
+		assertEquals("c1295203-75fb-4d24-a3f7-ed1b8a564ee6", 
 				song.getReleaseMBID());
 		
 	}
 	
 	public void testArtistMBID() {
-		assertEquals("b7ffd2af-418f-4be2-bdd1-22f8b48613da", 
+		assertEquals("6c85f4c3-026c-4c16-9a7c-f546f42ed0fb", 
 				song.getArtistMBID());
 		
 	}
 	
 	public void testRecording() {
-		assertEquals("Closer", 
+		assertEquals("You’re Not an Airplane", 
 				song.getRecording());
 		
 	}
 	
 	public void testRelease() {
-		assertEquals("The Downward Spiral", 
+		assertEquals("Bee Thousand", 
 				song.getRelease());
 		
 	}
 	
 	public void testArtist() {
-		assertEquals("Nine Inch Nails", 
+		assertEquals("Guided by Voices", 
 				song.getArtist());
 		
 	}

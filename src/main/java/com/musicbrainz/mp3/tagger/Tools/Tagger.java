@@ -129,7 +129,6 @@ public class Tagger {
 
 		JsonNode jsonNode = Tools.jsonToNode(res);
 
-
 		return jsonNode;
 
 	}

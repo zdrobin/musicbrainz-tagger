@@ -1,6 +1,7 @@
 package com.musicbrainz.mp3.tagger.Tools;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -18,6 +19,10 @@ public class Song {
 
 	private Song(File f) {
 		json = Tagger.fetchMBRecordingJSONFromFile(f);
+		
+		if (getFirstRecording() == null) {
+			throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.");
+		}
 	}
 
 	private JsonNode getFirstRecording() {
