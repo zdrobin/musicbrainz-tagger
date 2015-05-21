@@ -40,7 +40,9 @@ public class Song {
 		json = Tagger.fetchMBRecordingJSONFromQuery(query);
 		
 		if (getFirstRecording() == null) {
-			throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.");
+			throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.\n"
+					+ "query: " + query);
+			
 		}
 	}
 	

@@ -123,6 +123,17 @@ public class Tagger {
 		
 		String res = Tools.httpGet(query);
 
+		if (res.equals("")) {
+			// Wait some time before retrying
+			try {
+				Thread.sleep(1100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return fetchMBRecordingJSONFromQuery(query);
+		}
 		JsonNode jsonNode = Tools.jsonToNode(res);
 
 		return jsonNode;
