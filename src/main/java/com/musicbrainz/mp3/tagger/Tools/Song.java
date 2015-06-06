@@ -122,6 +122,10 @@ public class Song {
 	public Long getDuration() {
 		return mp3File.getLengthInMilliseconds();
 	}
+	
+	public String getYear() {
+		return Tagger.getId3v1Tag(mp3File).getYear();
+	}
 		
 
 }

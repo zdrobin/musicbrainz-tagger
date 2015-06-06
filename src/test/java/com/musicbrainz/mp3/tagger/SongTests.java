@@ -69,6 +69,12 @@ public class SongTests extends TestCase {
 		System.out.println(song.getJson());
 	}
 	
+	public void testYear() {
+		System.out.println(song.getYear());
+		assertEquals("1994", 
+				song.getYear());
+	}
+	
 
 	
 }
