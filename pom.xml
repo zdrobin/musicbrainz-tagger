@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.tchoulihan</groupId>
 	<artifactId>musicbrainz-tagger</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5</version>
 	<name>Musicbrainz tagger</name>
 	<description>Musicbrainz audio file tagger</description>
 
@@ -41,6 +41,19 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+
 
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
@@ -97,6 +110,29 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>release</name>
+					<value>true</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>sonatype-oss-release</id>
+			<properties>
+				<gpg.keyname>99E3403D</gpg.keyname>
+				<gpg.passphrase />
+				<gpg.defaultKeyring>false</gpg.defaultKeyring>
+				<gpg.useagent>true</gpg.useagent>
+				<gpg.lockMode>never</gpg.lockMode>
+				<gpg.homedir>/home/tyler/.gnupg</gpg.homedir>
+				<gpg.publicKeyring>/home/tyler/.gnupg/pubring.gpg</gpg.publicKeyring>
+				<gpg.secretKeyring>/home/tyler/.gnupg/secring.gpg</gpg.secretKeyring>
+			</properties>
+		</profile>
+
 	</profiles>
 
 
