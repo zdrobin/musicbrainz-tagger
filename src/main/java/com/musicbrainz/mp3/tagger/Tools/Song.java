@@ -5,11 +5,15 @@ import java.util.NoSuchElementException;
 
 import org.codehaus.jackson.JsonNode;
 
+import com.mpatric.mp3agic.Mp3File;
+
 public class Song {
 
 	private JsonNode json;
 	
 	private String query;
+	
+	private Mp3File mp3File;
 
 	/**
 	 * Give the prettified json response from musicbrainz
@@ -36,7 +40,8 @@ public class Song {
 	}
 
 	private Song(File f) {
-		query = Tagger.createQueryFromFile(f);
+		mp3File = Tagger.getMp3File(f);
+		query = Tagger.createQueryFromFile(mp3File);
 		json = Tagger.fetchMBRecordingJSONFromQuery(query);
 		
 		if (getFirstRecording() == null) {
@@ -63,7 +68,7 @@ public class Song {
 	 * @return musicbrainz-MBID
 	 */
 	public String getRecordingMBID() {
-		return getFirstRecording().get("id").asText();		
+		return getFirstRecording().get("id").asText().toLowerCase();		
 	}
 	
 	/**
@@ -83,7 +88,7 @@ public class Song {
 	 * @return musicbrainz-MBID
 	 */
 	public String getReleaseMBID() {
-		return getFirstRelease().get("id").asText();
+		return getFirstRelease().get("id").asText().toLowerCase();
 	}
 	
 	/**
@@ -103,7 +108,7 @@ public class Song {
 	 * @return musicbrainz-MBID
 	 */
 	public String getArtistMBID() {
-		return getFirstArtistCredit().get("id").asText();
+		return getFirstArtistCredit().get("id").asText().toLowerCase();
 	}
 	
 	/**
@@ -112,6 +117,10 @@ public class Song {
 	 */
 	public String getArtist() {
 		return getFirstArtistCredit().get("name").asText();
+	}
+	
+	public Long getDuration() {
+		return mp3File.getLengthInMilliseconds();
 	}
 		
 

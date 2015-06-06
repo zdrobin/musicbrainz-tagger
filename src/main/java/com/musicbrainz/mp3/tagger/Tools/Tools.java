@@ -39,18 +39,6 @@ public class Tools {
 	public static final File SAMPLE_SONG = new File(System.getProperty("user.dir") + "/src/main/resources/devil.mp3");
 
 	
-	public static JsonNode jsonToNode(String json) {
-
-		try {
-			JsonNode root = MAPPER.readTree(json);
-			return root;
-		} catch (Exception e) {
-			log.error("json: " + json);
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	public static final String httpGet(String url) {
 		String res = "";
 		try {
@@ -100,6 +88,18 @@ public class Tools {
 		return Tools.encodeURL("\"" + s + "\"");
 	}
 	
+	public static JsonNode jsonToNode(String json) {
+	
+		try {
+			JsonNode root = MAPPER.readTree(json);
+			return root;
+		} catch (Exception e) {
+			log.error("json: " + json);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static String nodeToJson(ObjectNode a) {
 		try {
 			return Tools.MAPPER.writeValueAsString(a);

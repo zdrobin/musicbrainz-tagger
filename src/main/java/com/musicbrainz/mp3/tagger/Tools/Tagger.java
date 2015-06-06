@@ -87,10 +87,10 @@ public class Tagger {
 		}
 
 		public String createQuery() {
-			
+
 			StringBuilder s = new StringBuilder();
 			s.append("http://musicbrainz.org/ws/2/recording/?query=");
-			
+
 			s.append("recording:" + Tools.surroundWithQuotes(recording));
 			s.append(" AND artist:" + Tools.surroundWithQuotes(artist));
 			s.append(" AND dur:[" + (duration - 1500) + " TO " + (duration + 1500) + "]");
@@ -106,12 +106,12 @@ public class Tagger {
 			if (date != null) {
 				s.append(" AND date:" + date + "*");
 			}
-			
-			
+
+
 			s.append("&limit=1");
 			s.append("&fmt=json");
 
-			
+
 			return Tools.replaceWhiteSpace(s.toString());
 
 		}
@@ -120,7 +120,7 @@ public class Tagger {
 	}
 
 	public static JsonNode fetchMBRecordingJSONFromQuery(String query) {
-		
+
 		String res = Tools.httpGet(query);
 
 		if (res.equals("")) {
@@ -131,15 +131,15 @@ public class Tagger {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			return fetchMBRecordingJSONFromQuery(query);
 		}
 		JsonNode jsonNode = Tools.jsonToNode(res);
 
 		return jsonNode;
-		
+
 	}
-	
+
 
 	public static JsonNode fetchCoverImagesFromMBID(String releaseMBID) {
 
@@ -152,25 +152,24 @@ public class Tagger {
 		return jsonNode;
 	}
 
-	public static String createQueryFromFile(File f) {
-		Mp3File mp3File;
+
+	public static Mp3File getMp3File(File f) {
+		Mp3File mp3File = null;
 		try {
 			mp3File = new Mp3File(f);
-			return createQueryFromFile(mp3File);
 		} catch (UnsupportedTagException | InvalidDataException | IOException e) {
 			e.printStackTrace();
 		}
-
-		return null;
-
+		
+		return mp3File;
 	}
 
 	public static String createQueryFromFile(Mp3File f) {
-		
+
 		// Get the correct tag
 		ID3v1 id3 = getId3v1Tag(f);
-		
-//		Tagger.printId3v1Tags(f);
+
+		//		Tagger.printId3v1Tags(f);
 
 		// Construct the query
 		Builder b = new MusicBrainzQuery.Builder(id3.getTitle(), id3.getArtist(), f.getLengthInMilliseconds());
