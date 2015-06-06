@@ -126,6 +126,11 @@ public class Song {
 	public String getYear() {
 		return Tagger.getId3v1Tag(mp3File).getYear();
 	}
+	
+	public Integer getTrackNumber() {
+		String firstNumber = Tagger.getId3v1Tag(mp3File).getTrack().split("(-|/)")[0];
+		return Integer.valueOf(firstNumber);
+	}
 		
 
 }

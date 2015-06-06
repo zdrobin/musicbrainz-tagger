@@ -75,6 +75,14 @@ public class SongTests extends TestCase {
 				song.getYear());
 	}
 	
+	public void testTrack() {
+		System.out.println(song.getTrackNumber());
+		assertEquals(Integer.valueOf(5), song.getTrackNumber());
+		
+	}
+	
+	
+	
 
 	
 }
