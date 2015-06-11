@@ -72,8 +72,10 @@ public class Artist {
 		
 		for (int i = 0;;i++) {
 			JsonNode cNode = relationsArray.get(i);
+			if (cNode == null) {
+				throw new NoSuchElementException("The type " + typeSearch + " doesn't exist");
+			}
 			String cType = cNode.get("type").asText();
-			System.out.println(Tools.nodeToJsonPretty(cNode));
 			if (cType.equals(typeSearch)) {
 				return cNode;
 			}
@@ -83,7 +85,17 @@ public class Artist {
 	}
 	
 	public String getLink(String typeSearch) {
-		return findFirstInRelationsArray(typeSearch).get("url").get("resource").asText();
+		try {
+		String link = findFirstInRelationsArray(typeSearch).get("url").get("resource").asText();
+		
+		return link;
+		
+		} catch(NoSuchElementException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	
 	}
 	
 	/**
