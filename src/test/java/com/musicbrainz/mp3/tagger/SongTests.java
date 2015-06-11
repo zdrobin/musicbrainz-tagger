@@ -6,7 +6,6 @@ import org.junit.Before;
 
 import com.mpatric.mp3agic.Mp3File;
 import com.musicbrainz.mp3.tagger.Tools.Song;
-import com.musicbrainz.mp3.tagger.Tools.Tagger;
 import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class SongTests extends TestCase {
@@ -21,8 +20,8 @@ public class SongTests extends TestCase {
 	
 	public void testCreateQuery() {
 		
-		Mp3File mp3File = Tagger.getMp3File(Tools.SAMPLE_SONG);
-		String query = Tagger.createQueryFromFile(mp3File);
+		Mp3File mp3File = Tools.getMp3File(Tools.SAMPLE_SONG);
+		String query = Song.createQueryFromFile(mp3File);
 		System.out.println(query);
 		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:%22You%27re+Not+an+Airplane%22%20AND%20artist:%22Guided+By+Voices%22%20AND%20dur:[31900%20TO%2034900]%20AND%20number:20%20AND%20release:%22Bee+Thousand%22%20AND%20date:1994*&limit=1&fmt=json",
 				query);

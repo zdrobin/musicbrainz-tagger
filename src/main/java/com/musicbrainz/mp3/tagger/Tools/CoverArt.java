@@ -22,8 +22,9 @@ public class CoverArt {
 	}
 
 	private CoverArt(Song s) {
-		json = Tagger.fetchCoverImagesFromMBID(s.getReleaseMBID());
+		json = fetchCoverImagesFromMBID(s.getReleaseMBID());
 
+		
 		if (json == null) {
 			throw new NoSuchElementException("No cover art found on coverartarchive.org");
 		}
@@ -61,6 +62,29 @@ public class CoverArt {
 		return getThumbnails().get("small").asText();
 	}
 
+	
+	private static JsonNode fetchCoverImagesFromMBID(String releaseMBID) {
 
+		String query = "https://coverartarchive.org/release/" + releaseMBID;
+
+		String res = Tools.httpGet(query);
+		
+		if (res.equals("")) {
+			// Wait some time before retrying
+			try {
+				Thread.sleep(1100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return fetchCoverImagesFromMBID(query);
+		}
+		
+
+		JsonNode jsonNode = Tools.jsonToNode(res);
+
+		return jsonNode;
+	}
 
 }
