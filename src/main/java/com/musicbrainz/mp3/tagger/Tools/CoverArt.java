@@ -68,21 +68,7 @@ public class CoverArt {
 		String query = "https://coverartarchive.org/release-group/" + releaseGroupMBID;
 
 		String res = Tools.httpGet(query);
-		
-		if (res.equals("")) {
-			// Wait some time before retrying
-			try {
-				Thread.sleep(1100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			return fetchCoverImagesFromMBID(query);
-		} else if (!res.startsWith("{")) {
-			return null;
-		}
-		
+				
 
 		JsonNode jsonNode = Tools.jsonToNode(res);
 

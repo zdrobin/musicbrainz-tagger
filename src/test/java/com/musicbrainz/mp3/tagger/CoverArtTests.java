@@ -1,10 +1,14 @@
 package com.musicbrainz.mp3.tagger;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.musicbrainz.mp3.tagger.Tools.CoverArt;
 import com.musicbrainz.mp3.tagger.Tools.Song;
@@ -40,10 +44,13 @@ public class CoverArtTests extends TestCase {
 				coverArt.getLargeThumbnailURL());
 	}
 	
+	
 	public void testCoverArtNotFoundTest() {
 		String mbid = "00fde5ab-541d-3c70-a8b5-6593a35b5bed";
-		coverArt = CoverArt.fetchCoverArt(mbid);
 		
-		System.out.println(coverArt);
+		try {
+			coverArt = CoverArt.fetchCoverArt(mbid);
+		} catch(NoSuchElementException e) {}
+
 	}
 }
