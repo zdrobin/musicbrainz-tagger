@@ -99,6 +99,20 @@ public class Song {
 	public String getRelease() {
 		return getFirstRelease().get("title").asText();
 	}
+	
+	private JsonNode getFirstReleaseGroup() {
+		return getFirstRecording().get("releases").get(0).get("release-group");
+	}
+	
+	/**
+	 * Fetches the musicbrainz MBID for the release group.
+	 * @return musicbrainz-MBID
+	 */
+	public String getReleaseGroupMBID() {
+		return getFirstReleaseGroup().get("id").asText().toLowerCase();
+	}
+	
+
 
 	private JsonNode getFirstArtistCredit() {
 		return getFirstRecording().get("artist-credit").get(0).get("artist");

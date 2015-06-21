@@ -18,7 +18,7 @@ public class CoverArtTests extends TestCase {
 	@Before
 	public void setUp() {
 		song = Song.fetchSong(Tools.SAMPLE_SONG);
-		coverArt = CoverArt.fetchCoverArt(song);
+		coverArt = CoverArt.fetchCoverArt(song.getReleaseGroupMBID());
 	}
 	
 	public void testJson() {
@@ -26,17 +26,17 @@ public class CoverArtTests extends TestCase {
 	}
 	
 	public void testImageUrl() {
-		assertEquals("http://coverartarchive.org/release/602af258-e647-48e2-9660-bd0c5c8f92bf/10149750572.jpg", 
+		assertEquals("http://coverartarchive.org/release/dceb6a01-3431-36af-b2e1-6462193bd67c/2196400361.jpg", 
 				coverArt.getImageURL());
 	}
 	
 	public void testsmallThumbnailUrl() {
-		assertEquals("http://coverartarchive.org/release/602af258-e647-48e2-9660-bd0c5c8f92bf/10149750572-250.jpg", 
+		assertEquals("http://coverartarchive.org/release/dceb6a01-3431-36af-b2e1-6462193bd67c/2196400361-250.jpg", 
 				coverArt.getSmallThumbnailURL());
 	}
 	
 	public void testlargeThumbnailUrl() {
-		assertEquals("http://coverartarchive.org/release/602af258-e647-48e2-9660-bd0c5c8f92bf/10149750572-500.jpg", 
+		assertEquals("http://coverartarchive.org/release/dceb6a01-3431-36af-b2e1-6462193bd67c/2196400361-500.jpg", 
 				coverArt.getLargeThumbnailURL());
 	}
 }

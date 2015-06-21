@@ -17,12 +17,12 @@ public class CoverArt {
 	 * @param song
 	 * @return
 	 */
-	public static CoverArt fetchCoverArt(Song s) {
-		return new CoverArt(s);
+	public static CoverArt fetchCoverArt(String releaseGroupMbid) {
+		return new CoverArt(releaseGroupMbid);
 	}
 
-	private CoverArt(Song s) {
-		json = fetchCoverImagesFromMBID(s.getReleaseMBID());
+	private CoverArt(String releaseGroupMbid) {
+		json = fetchCoverImagesFromMBID(releaseGroupMbid);
 
 		
 		if (json == null) {
@@ -63,9 +63,9 @@ public class CoverArt {
 	}
 
 	
-	private static JsonNode fetchCoverImagesFromMBID(String releaseMBID) {
+	private static JsonNode fetchCoverImagesFromMBID(String releaseGroupMBID) {
 
-		String query = "https://coverartarchive.org/release/" + releaseMBID;
+		String query = "https://coverartarchive.org/release-group/" + releaseGroupMBID;
 
 		String res = Tools.httpGet(query);
 		
