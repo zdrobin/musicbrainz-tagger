@@ -39,4 +39,11 @@ public class CoverArtTests extends TestCase {
 		assertEquals("http://coverartarchive.org/release/dceb6a01-3431-36af-b2e1-6462193bd67c/2196400361-500.jpg", 
 				coverArt.getLargeThumbnailURL());
 	}
+	
+	public void testCoverArtNotFoundTest() {
+		String mbid = "00fde5ab-541d-3c70-a8b5-6593a35b5bed";
+		coverArt = CoverArt.fetchCoverArt(mbid);
+		
+		System.out.println(coverArt);
+	}
 }

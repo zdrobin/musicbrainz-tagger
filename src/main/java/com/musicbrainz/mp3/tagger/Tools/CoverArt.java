@@ -79,6 +79,8 @@ public class CoverArt {
 			}
 
 			return fetchCoverImagesFromMBID(query);
+		} else if (!res.startsWith("{")) {
+			return null;
 		}
 		
 

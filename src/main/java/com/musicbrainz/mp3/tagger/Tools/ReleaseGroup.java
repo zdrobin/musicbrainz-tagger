@@ -49,6 +49,7 @@ public class ReleaseGroup {
 		if (res.equals("")) {
 			// Wait some time before retrying
 			try {
+				
 				Thread.sleep(1100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
