@@ -164,7 +164,7 @@ public class Song {
 	public static class MusicBrainzRecordingQuery {
 		private String recording;
 		private String artist;
-		private String number;
+		private Integer number;
 		private String release;
 		private String date;
 		private Long duration;
@@ -172,7 +172,7 @@ public class Song {
 		public static class Builder {
 			private String recording;
 			private String artist;
-			private String number;
+			private Integer number;
 			private String release;
 			private String date;
 			private Long duration;
@@ -184,14 +184,7 @@ public class Song {
 				this.duration = duration;
 			}
 
-			public Builder number(String number) {
-				// Check for 5/14 or a division sign
-
-				if (number.contains("/")) {
-					this.number = number.split("/")[0];
-					return this;
-				}
-
+			public Builder number(Integer number) {
 				this.number = number;
 				return this;
 			}
@@ -286,7 +279,15 @@ public class Song {
 
 		String number = id3.getTrack();
 		if (number != null) {
-			b.number(number);
+			
+			// Check for 5/14 or a division sign, or a zero
+
+			if (number.contains("/")) {
+				number = number.split("/")[0];
+			}
+			
+			
+			b.number(Integer.parseInt(number));
 		}
 
 		String date = id3.getYear();

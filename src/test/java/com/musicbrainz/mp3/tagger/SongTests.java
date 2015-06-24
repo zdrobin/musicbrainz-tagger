@@ -86,6 +86,10 @@ public class SongTests extends TestCase {
 		assertEquals(Integer.valueOf(5), song.getTrackNumber());
 
 	}
+	
+	public void testNumber() {
+		assertEquals(Integer.parseInt("08"), 8);
+	}
 
 
 
