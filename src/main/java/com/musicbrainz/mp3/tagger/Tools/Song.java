@@ -11,10 +11,12 @@ import com.mpatric.mp3agic.Mp3File;
 public class Song {
 
 	private JsonNode json;
-	
+
 	private String query;
-	
+
 	private Mp3File mp3File;
+
+	private static final Integer DURATION_WINDOW_MS = 5000;
 
 	/**
 	 * Give the prettified json response from musicbrainz
@@ -23,7 +25,7 @@ public class Song {
 	public String getJson() {
 		return Tools.nodeToJsonPretty(json);
 	}
-	
+
 	/**
 	 * Looks up the musicbrainz recording from a given music file, using 6 pieces of info:<br>
 	 * track title<br>
@@ -44,14 +46,14 @@ public class Song {
 		mp3File = Tools.getMp3File(f);
 		query = createQueryFromFile(mp3File);
 		json = fetchMBRecordingJSONFromQuery(query);
-		
+
 		if (getFirstRecording() == null) {
 			throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.\n"
 					+ "query: " + query);
-			
+
 		}
 	}
-	
+
 	/**
 	 * Fetches the MusicBrainz query for the song
 	 * @return query
@@ -71,7 +73,7 @@ public class Song {
 	public String getRecordingMBID() {
 		return getFirstRecording().get("id").asText().toLowerCase();		
 	}
-	
+
 	/**
 	 * Fetches the title for the recording.
 	 * @return title
@@ -91,7 +93,7 @@ public class Song {
 	public String getReleaseMBID() {
 		return getFirstRelease().get("id").asText().toLowerCase();
 	}
-	
+
 	/**
 	 * Fetches the title for the release.
 	 * @return title
@@ -99,11 +101,11 @@ public class Song {
 	public String getRelease() {
 		return getFirstRelease().get("title").asText();
 	}
-	
+
 	private JsonNode getFirstReleaseGroup() {
 		return getFirstRecording().get("releases").get(0).get("release-group");
 	}
-	
+
 	/**
 	 * Fetches the musicbrainz MBID for the release group.
 	 * @return musicbrainz-MBID
@@ -111,7 +113,7 @@ public class Song {
 	public String getReleaseGroupMBID() {
 		return getFirstReleaseGroup().get("id").asText().toLowerCase();
 	}
-	
+
 
 
 	private JsonNode getFirstArtistCredit() {
@@ -125,7 +127,7 @@ public class Song {
 	public String getArtistMBID() {
 		return getFirstArtistCredit().get("id").asText().toLowerCase();
 	}
-	
+
 	/**
 	 * Fetches the name of the artist.
 	 * @return name
@@ -133,21 +135,21 @@ public class Song {
 	public String getArtist() {
 		return getFirstArtistCredit().get("name").asText();
 	}
-	
+
 	public Long getDuration() {
 		return mp3File.getLengthInMilliseconds();
 	}
-	
+
 	public String getYear() {
 		return Tools.getId3v1Tag(mp3File).getYear();
 	}
-	
+
 	public Integer getTrackNumber() {
 		String firstNumber = Tools.getId3v1Tag(mp3File).getTrack().split("(-|/)")[0];
 		return Integer.valueOf(firstNumber);
 	}
-		
-	
+
+
 	/**
 	 * Here's a sample musicbrainz query
 	 * search terms for recording: 
@@ -219,7 +221,8 @@ public class Song {
 
 			s.append("recording:" + Tools.surroundWithQuotes(recording));
 			s.append(" AND artist:" + Tools.surroundWithQuotes(artist));
-			s.append(" AND dur:[" + (duration - 1500) + " TO " + (duration + 1500) + "]");
+			s.append(" AND dur:[" + (duration - DURATION_WINDOW_MS/2) + " TO " + 
+					(duration + DURATION_WINDOW_MS/2) + "]");
 
 			if (number != null) {
 				s.append(" AND number:" + number);
@@ -244,8 +247,8 @@ public class Song {
 
 
 	}
-	
-	
+
+
 	public static JsonNode fetchMBRecordingJSONFromQuery(String query) {
 
 		String res = Tools.httpGet(query);
@@ -266,7 +269,7 @@ public class Song {
 		return jsonNode;
 
 	}
-	
+
 	public static String createQueryFromFile(Mp3File f) {
 
 		// Get the correct tag
@@ -279,14 +282,14 @@ public class Song {
 
 		String number = id3.getTrack();
 		if (number != null) {
-			
+
 			// Check for 5/14 or a division sign, or a zero
 
 			if (number.contains("/")) {
 				number = number.split("/")[0];
 			}
-			
-			
+
+
 			b.number(Integer.parseInt(number));
 		}
 
