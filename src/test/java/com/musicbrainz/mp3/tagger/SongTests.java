@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Before;
 
 import com.mpatric.mp3agic.Mp3File;
+import com.musicbrainz.mp3.tagger.Tools.ReleaseGroup;
 import com.musicbrainz.mp3.tagger.Tools.Song;
 import com.musicbrainz.mp3.tagger.Tools.Tools;
 
@@ -64,6 +65,7 @@ public class SongTests extends TestCase {
 				song.getRelease());
 
 	}
+	
 
 	public void testArtist() {
 		assertEquals("Nine Inch Nails", 

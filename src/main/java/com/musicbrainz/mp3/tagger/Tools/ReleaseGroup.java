@@ -64,6 +64,10 @@ public class ReleaseGroup {
 		return jsonNode;
 	}
 	
+	public String getTitle() {
+		return json.get("title").asText();
+	}
+	
 	/** For some reason I found many type=discography, so I'd just select the first found
 	 * 
 	 * @return
