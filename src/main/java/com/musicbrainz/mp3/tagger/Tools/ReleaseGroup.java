@@ -3,6 +3,8 @@ package com.musicbrainz.mp3.tagger.Tools;
 import java.util.NoSuchElementException;
 
 import org.codehaus.jackson.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** This just performs a lookup of the release group by mbid to get links
  * 
@@ -10,6 +12,8 @@ import org.codehaus.jackson.JsonNode;
  *
  */
 public class ReleaseGroup {
+	
+	static final Logger log = LoggerFactory.getLogger(ReleaseGroup.class);
 	
 	private JsonNode json;
 
@@ -64,8 +68,17 @@ public class ReleaseGroup {
 		return jsonNode;
 	}
 	
+	/** 
+	 * Gets the title of the release group
+	 * @return
+	 */
 	public String getTitle() {
 		return json.get("title").asText();
+	}
+	
+	
+	public String getYear() {
+		return json.get("first-release-date").asText().split("-")[0];
 	}
 	
 	/** For some reason I found many type=discography, so I'd just select the first found
@@ -96,7 +109,7 @@ public class ReleaseGroup {
 		return link;
 		
 		} catch(NoSuchElementException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			return null;
 		}
 		

@@ -1,12 +1,21 @@
 package com.musicbrainz.mp3.tagger;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 import junit.framework.TestCase;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 
 import com.mpatric.mp3agic.Mp3File;
 import com.musicbrainz.mp3.tagger.Tools.ReleaseGroup;
 import com.musicbrainz.mp3.tagger.Tools.Song;
+import com.musicbrainz.mp3.tagger.Tools.Song.ReleaseGroupInfo;
 import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class SongTests extends TestCase {
@@ -24,8 +33,8 @@ public class SongTests extends TestCase {
 		Mp3File mp3File = Tools.getMp3File(Tools.SAMPLE_SONG);
 		String query = Song.createQueryFromFile(mp3File);
 		System.out.println(query);
-		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:%22Closer%22%20AND%20artist:%22Nine+Inch+Nails%22%20AND%20dur:[371166%20TO%20374166]%20AND%20number:5%20AND%20release:%22The+Downward+Spiral%22%20AND%20date:1994*&limit=1&fmt=json",
-				query);
+		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:%22Closer%22%20AND%20artist:%22Nine+Inch+Nails%22%20AND%20dur:[365166%20TO%20380166]%20AND%20number:5%20AND%20release:%22The+Downward+Spiral%22&limit=1&fmt=json"
+				,query);
 
 	}
 
@@ -61,11 +70,12 @@ public class SongTests extends TestCase {
 	}
 
 	public void testRelease() {
+		System.out.println(song.getRelease());
 		assertEquals("The Downward Spiral", 
 				song.getRelease());
 
 	}
-	
+
 
 	public void testArtist() {
 		assertEquals("Nine Inch Nails", 
@@ -74,7 +84,7 @@ public class SongTests extends TestCase {
 	}
 
 	public void testJson() {
-		System.out.println(song.getJson());
+		System.out.println(song.toJson());
 	}
 
 	public void testYear() {
@@ -88,10 +98,37 @@ public class SongTests extends TestCase {
 		assertEquals(Integer.valueOf(5), song.getTrackNumber());
 
 	}
-	
+
 	public void testNumber() {
 		assertEquals(Integer.parseInt("08"), 8);
 	}
+
+	public void testWeirdSong() {
+		File dCabWeird = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/4. 7 Inch Singles/1999 - Prove my Hypothesis 7 inch Single/01 Prove My Hypothesis.mp3");
+
+		try {
+			Song s = Song.fetchSong(dCabWeird);
+			System.out.println(s.toJson());
+		} catch(NoSuchElementException e) {}
+
+	}
+
+	public void testReleaseGroupMBIDs() {
+		Set<ReleaseGroupInfo> albums = song.getReleaseGroupInfos();
+		
+		String albumsStr = Arrays.toString(albums.toArray());
+		System.out.println(albumsStr);
+
+		Boolean test = albumsStr.contains("7c4cab8d-dead-3870-b501-93c90fd0a580");
+		assertTrue(test);
+	}
+	
+	public void testMapper() throws JsonGenerationException, JsonMappingException, IOException {
+		System.out.println(Tools.MAPPER.writeValueAsString(song));
+
+	}
+	
+
 
 
 

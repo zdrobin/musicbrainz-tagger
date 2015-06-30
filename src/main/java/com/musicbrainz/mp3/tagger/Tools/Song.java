@@ -1,14 +1,26 @@
 package com.musicbrainz.mp3.tagger.Tools;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.Mp3File;
 
 public class Song {
+
+	static final Logger log = LoggerFactory.getLogger(Song.class);
+
 
 	private JsonNode json;
 
@@ -22,7 +34,7 @@ public class Song {
 	 * Give the prettified json response from musicbrainz
 	 * @return json
 	 */
-	public String getJson() {
+	public String toJson() {
 		return Tools.nodeToJsonPretty(json);
 	}
 
@@ -94,6 +106,7 @@ public class Song {
 		return getFirstRelease().get("id").asText().toLowerCase();
 	}
 
+
 	/**
 	 * Fetches the title for the release.
 	 * @return title
@@ -112,6 +125,75 @@ public class Song {
 	 */
 	public String getReleaseGroupMBID() {
 		return getFirstReleaseGroup().get("id").asText().toLowerCase();
+	}
+
+	/**
+	 * Fetches all the release groups associated with this song
+	 * @return
+	 */
+	public Set<ReleaseGroupInfo> getReleaseGroupInfos() {
+
+		Set<ReleaseGroupInfo> releaseGroupInfos = new LinkedHashSet<>();
+		Set<String> releaseGroupMBIDs = new LinkedHashSet<>(); // for uniqueness
+		JsonNode releases = getFirstRecording().get("releases");
+
+		int i = 0;
+		while (releases.has(i)) {
+			String cReleaseGroupMBID = releases.get(i).get("release-group").get("id").asText();
+			Integer discNo = releases.get(i).get("media").get(0).get("position").asInt();
+			Integer trackNo = releases.get(i).get("media").get(0).get("track").get(0).get("number").asInt();
+
+			// Only create and add if its a unique releaseGroupMBID
+			if (!releaseGroupMBIDs.contains(cReleaseGroupMBID)) {
+				ReleaseGroupInfo releaseGroupInfo = ReleaseGroupInfo.create(
+						cReleaseGroupMBID, trackNo, discNo);
+				releaseGroupInfos.add(releaseGroupInfo);
+				releaseGroupMBIDs.add(cReleaseGroupMBID);
+			}
+
+			i++;
+		}
+
+		return releaseGroupInfos;
+
+
+	}
+
+	public static class ReleaseGroupInfo {
+
+		private String mbid;
+		private Integer trackNo, discNo;
+
+		public static ReleaseGroupInfo create(
+				String releaseGroupMBID, Integer trackNo, Integer discNo) {
+			return new ReleaseGroupInfo(releaseGroupMBID, trackNo, discNo);
+		}
+
+		private ReleaseGroupInfo(String releaseGroupMBID, Integer trackNo, Integer discNo) {
+			this.mbid = releaseGroupMBID;
+			this.trackNo = trackNo;
+			this.discNo = discNo;
+		}
+
+		public String getMbid() {
+			return mbid;
+		}
+
+		public Integer getTrackNo() {
+			return trackNo;
+		}
+
+		public Integer getDiscNo() {
+			return discNo;
+		}
+
+		@Override
+		public String toString() {
+			return "mbid: " + mbid + " , track #: " + trackNo + " , disc #: " + discNo;
+		}
+
+
+
 	}
 
 
@@ -190,6 +272,7 @@ public class Song {
 				this.number = number;
 				return this;
 			}
+
 			public Builder release(String release) {
 				this.release = release;
 				return this;
@@ -216,7 +299,9 @@ public class Song {
 
 		public String createQuery() {
 
+			
 			StringBuilder s = new StringBuilder();
+		
 			s.append("http://musicbrainz.org/ws/2/recording/?query=");
 
 			s.append("recording:" + Tools.surroundWithQuotes(recording));
@@ -229,19 +314,24 @@ public class Song {
 			}
 
 			if (release != null) {
+
 				s.append(" AND release:" + Tools.surroundWithQuotes(release));
 			}
 
-//			if (date != null) {
-//				s.append(" AND date:" + date + "*");
-//			}
-
+			// Date checking removed, it was very inadequate
+			//			if (date != null) {
+			//				s.append(" AND date:" + date + "*");
+			//			}
 
 			s.append("&limit=1");
 			s.append("&fmt=json");
 
 
-			return Tools.replaceWhiteSpace(s.toString());
+			
+
+			String str = Tools.replaceWhiteSpace(s.toString());
+			
+			return str;
 
 		}
 
@@ -250,23 +340,33 @@ public class Song {
 
 
 	public static JsonNode fetchMBRecordingJSONFromQuery(String query) {
+		
+		JsonNode jsonNode = null;
 
-		String res = Tools.httpGet(query);
 
-		if (res.equals("")) {
+		try {
+
+			
+			String res = Tools.httpGet(query);
+			jsonNode = Tools.jsonToNode(res);
+			return jsonNode;
+			
+			
+		} catch(NoSuchElementException e) {
+			log.info("query failed: " + query);
 			// Wait some time before retrying
 			try {
-				Thread.sleep(1100);
-			} catch (InterruptedException e) {
+				Thread.sleep(1200); // curent ratelimit is 22reqs /20 seconds
+			} catch (InterruptedException e2) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e2.printStackTrace();
 			}
-
 			return fetchMBRecordingJSONFromQuery(query);
 		}
-		JsonNode jsonNode = Tools.jsonToNode(res);
+		
+	
 
-		return jsonNode;
+	
 
 	}
 

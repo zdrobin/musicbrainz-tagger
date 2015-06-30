@@ -24,10 +24,16 @@ public class ReleaseGroupTests extends TestCase {
 	public void testTitle() {
 		ReleaseGroup rg2 = ReleaseGroup.fetchReleaseGroup("190299e7-9232-3719-baf0-c69f78892b4c");
 		System.out.println(rg2.getTitle());
+		
+		
+		assertEquals("The Downward Spiral",
+				rg.getTitle());
 	}
 	
-
-
+	public void testYear() {
+		assertEquals("1994",
+				rg.getYear());
+	}
 	
 	public void testWikipedia() {
 		assertEquals("http://en.wikipedia.org/wiki/The_Downward_Spiral", 
