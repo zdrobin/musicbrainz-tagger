@@ -106,9 +106,17 @@ public class SongTests extends TestCase {
 	public void testWeirdSong() {
 		File dCabWeird = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/4. 7 Inch Singles/1999 - Prove my Hypothesis 7 inch Single/01 Prove My Hypothesis.mp3");
 
+		File dCabWeird2 = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/1. Studio Albums/2008 - Narrow Stairs/04 Cath.mp3");
+		
+		File dCabWeird3 = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/3. Live & Bootleg/2004 - MTV.com (Live)/01 The Dream is Over.mp3");
+		
+		File weird4 = new File("/media/tyler/Tyhous_HD/Music/Creedence Clearwater Revival/1970 - Pendulum/01 - Pagan Baby.mp3");
+		
 		try {
-			Song s = Song.fetchSong(dCabWeird);
+			Song s = Song.fetchSong(weird4);
+			
 			System.out.println(s.toJson());
+
 		} catch(NoSuchElementException e) {}
 
 	}
@@ -126,6 +134,19 @@ public class SongTests extends TestCase {
 	public void testMapper() throws JsonGenerationException, JsonMappingException, IOException {
 		System.out.println(Tools.MAPPER.writeValueAsString(song));
 
+	}
+	
+	public void testReleaseGroupTrackNos() {
+		File weirdBDSong = new File("/media/tyler/Tyhous_HD/Music/Bob Dylan - Studio Discography [1962 - 2015]/[1962] - Bob Dylan/02 - Talkin' New York.mp3");
+		
+		
+		Song s = Song.fetchSong(weirdBDSong);
+		System.out.println(s.getQuery());
+		for (ReleaseGroupInfo rg : s.getReleaseGroupInfos()) {
+			System.out.println(rg.getMbid());
+			System.out.println(rg.getTrackNo());
+		}
+		
 	}
 	
 

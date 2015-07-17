@@ -55,15 +55,24 @@ public class Song {
 	}
 
 	private Song(File f) {
+
 		mp3File = Tools.getMp3File(f);
-		query = createQueryFromFile(mp3File);
-		json = fetchMBRecordingJSONFromQuery(query);
+		try {
+			query = createQueryFromFile(mp3File);
 
-		if (getFirstRecording() == null) {
-			throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.\n"
-					+ "query: " + query);
+			json = fetchMBRecordingJSONFromQuery(query);
 
+			if (getFirstRecording() == null) {
+				throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.\n"
+						+ "query: " + query);
+
+			}
+		} 
+		// Happens if there's a null query
+		catch(NoSuchElementException e) {
+			e.printStackTrace();
 		}
+
 	}
 
 	/**
@@ -141,7 +150,10 @@ public class Song {
 		while (releases.has(i)) {
 			String cReleaseGroupMBID = releases.get(i).get("release-group").get("id").asText();
 			Integer discNo = releases.get(i).get("media").get(0).get("position").asInt();
-			Integer trackNo = releases.get(i).get("media").get(0).get("track").get(0).get("number").asInt();
+			String trackNoStr = releases.get(i).get("media").get(0).get("track").get(0).get("number").asText();
+			
+			// This was necessary because some track numbers had letters in them, IE A2
+			Integer trackNo = Integer.valueOf(trackNoStr.replaceAll("[^\\d.]", ""));
 
 			// Only create and add if its a unique releaseGroupMBID
 			if (!releaseGroupMBIDs.contains(cReleaseGroupMBID)) {
@@ -263,6 +275,10 @@ public class Song {
 
 
 			public Builder(String recording, String artist, Long duration) {
+
+				if (recording == null || artist == null || duration == null) {
+					throw new NoSuchElementException("The artist, recording, or duration is null");
+				}
 				this.recording = recording;
 				this.artist = artist;
 				this.duration = duration;
@@ -299,9 +315,10 @@ public class Song {
 
 		public String createQuery() {
 
-			
+
+
 			StringBuilder s = new StringBuilder();
-		
+
 			s.append("http://musicbrainz.org/ws/2/recording/?query=");
 
 			s.append("recording:" + Tools.surroundWithQuotes(recording));
@@ -327,10 +344,10 @@ public class Song {
 			s.append("&fmt=json");
 
 
-			
+
 
 			String str = Tools.replaceWhiteSpace(s.toString());
-			
+
 			return str;
 
 		}
@@ -340,18 +357,18 @@ public class Song {
 
 
 	public static JsonNode fetchMBRecordingJSONFromQuery(String query) {
-		
+
 		JsonNode jsonNode = null;
 
 
 		try {
 
-			
+
 			String res = Tools.httpGet(query);
 			jsonNode = Tools.jsonToNode(res);
 			return jsonNode;
-			
-			
+
+
 		} catch(NoSuchElementException e) {
 			log.info("query failed: " + query);
 			// Wait some time before retrying
@@ -363,10 +380,10 @@ public class Song {
 			}
 			return fetchMBRecordingJSONFromQuery(query);
 		}
-		
-	
 
-	
+
+
+
 
 	}
 
