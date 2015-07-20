@@ -141,7 +141,7 @@ public class SongTests extends TestCase {
 		
 		
 		Song s = Song.fetchSong(weirdBDSong);
-		System.out.println(s.getQuery());
+//		System.out.println(s.toJson());
 		for (ReleaseGroupInfo rg : s.getReleaseGroupInfos()) {
 			System.out.println(rg.getMbid());
 			System.out.println(rg.getTrackNo());
@@ -149,8 +149,12 @@ public class SongTests extends TestCase {
 		
 	}
 	
-	public void printAlbumTypes() {
-		for (ReleaseGroupInfo rg : song.getReleaseGroupInfos()) {
+	public void testPrintAlbumTypes() {
+		
+		File weirdSong = new File("/media/tyler/Tyhous_HD/Music/Bob Dylan - Studio Discography [1962 - 2015]/[1963] - Freewheelin' Bob Dylan/13 - I Shall Be Free.mp3");
+		Song s = Song.fetchSong(weirdSong);
+		System.out.println(s.toJson());
+		for (ReleaseGroupInfo rg : s.getReleaseGroupInfos()) {
 			System.out.println("Primary type = " + rg.getPrimaryType());
 			System.out.println("secondary type = " + rg.getSecondaryTypes());
 		}

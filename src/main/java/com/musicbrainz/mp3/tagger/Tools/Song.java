@@ -152,7 +152,9 @@ public class Song {
 			Integer discNo = releases.get(i).get("media").get(0).get("position").asInt();
 			String trackNoStr = releases.get(i).get("media").get(0).get("track").get(0).get("number").asText();
 
-			String primaryType = releases.get(i).get("release-group").get("primary-type").asText();
+			String primaryType = (releases.get(i).get("release-group").get("primary-type") != null) ?
+					releases.get(i).get("release-group").get("primary-type").asText() : null;
+	
 			Set<String> secondaryTypes = null;
 
 			JsonNode secondaryTypesJson = releases.get(i).get("release-group").get("secondary-types");
