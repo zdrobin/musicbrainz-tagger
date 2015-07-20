@@ -149,6 +149,19 @@ public class SongTests extends TestCase {
 		
 	}
 	
+	public void printAlbumTypes() {
+		for (ReleaseGroupInfo rg : song.getReleaseGroupInfos()) {
+			System.out.println("Primary type = " + rg.getPrimaryType());
+			System.out.println("secondary type = " + rg.getSecondaryTypes());
+		}
+	}
+	
+	public void testAlbumTypes() {
+		ReleaseGroupInfo rg = song.getReleaseGroupInfos().iterator().next();
+		assertEquals(String.valueOf("Album"), rg.getPrimaryType());
+		assertNull(rg.getSecondaryTypes());
+	}
+	
 
 
 

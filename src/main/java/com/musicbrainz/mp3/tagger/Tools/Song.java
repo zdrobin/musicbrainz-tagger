@@ -151,14 +151,27 @@ public class Song {
 			String cReleaseGroupMBID = releases.get(i).get("release-group").get("id").asText();
 			Integer discNo = releases.get(i).get("media").get(0).get("position").asInt();
 			String trackNoStr = releases.get(i).get("media").get(0).get("track").get(0).get("number").asText();
-			
+
+			String primaryType = releases.get(i).get("release-group").get("primary-type").asText();
+			Set<String> secondaryTypes = null;
+
+			JsonNode secondaryTypesJson = releases.get(i).get("release-group").get("secondary-types");
+			if (secondaryTypesJson != null) {
+				secondaryTypes = new LinkedHashSet<String>();
+				int j = 0;
+				while (secondaryTypesJson.has(j)) {
+					secondaryTypes.add(secondaryTypesJson.get(j++).asText());
+				}
+			}
+
+
 			// This was necessary because some track numbers had letters in them, IE A2
 			Integer trackNo = Integer.valueOf(trackNoStr.replaceAll("[^\\d.]", ""));
 
 			// Only create and add if its a unique releaseGroupMBID
 			if (!releaseGroupMBIDs.contains(cReleaseGroupMBID)) {
 				ReleaseGroupInfo releaseGroupInfo = ReleaseGroupInfo.create(
-						cReleaseGroupMBID, trackNo, discNo);
+						cReleaseGroupMBID, trackNo, discNo, primaryType, secondaryTypes);
 				releaseGroupInfos.add(releaseGroupInfo);
 				releaseGroupMBIDs.add(cReleaseGroupMBID);
 			}
@@ -173,18 +186,23 @@ public class Song {
 
 	public static class ReleaseGroupInfo {
 
-		private String mbid;
+		private String mbid, primaryType;
+		private Set<String> secondaryTypes;
 		private Integer trackNo, discNo;
 
 		public static ReleaseGroupInfo create(
-				String releaseGroupMBID, Integer trackNo, Integer discNo) {
-			return new ReleaseGroupInfo(releaseGroupMBID, trackNo, discNo);
+				String releaseGroupMBID, Integer trackNo, Integer discNo, String primaryType, 
+				Set<String> secondaryTypes) {
+			return new ReleaseGroupInfo(releaseGroupMBID, trackNo, discNo, primaryType, secondaryTypes);
 		}
 
-		private ReleaseGroupInfo(String releaseGroupMBID, Integer trackNo, Integer discNo) {
+		private ReleaseGroupInfo(String releaseGroupMBID, Integer trackNo, Integer discNo, 
+				String primaryType, Set<String> secondaryTypes) {
 			this.mbid = releaseGroupMBID;
 			this.trackNo = trackNo;
 			this.discNo = discNo;
+			this.primaryType = primaryType;
+			this.secondaryTypes = secondaryTypes;
 		}
 
 		public String getMbid() {
@@ -193,6 +211,15 @@ public class Song {
 
 		public Integer getTrackNo() {
 			return trackNo;
+		}
+
+		public String getPrimaryType() {
+			return primaryType;
+		}
+
+
+		public Set<String> getSecondaryTypes() {
+			return secondaryTypes;
 		}
 
 		public Integer getDiscNo() {
