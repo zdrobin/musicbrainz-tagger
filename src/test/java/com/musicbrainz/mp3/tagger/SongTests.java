@@ -112,10 +112,15 @@ public class SongTests extends TestCase {
 		
 		File weird4 = new File("/media/tyler/Tyhous_HD/Music/Creedence Clearwater Revival/1970 - Pendulum/01 - Pagan Baby.mp3");
 		
+		File weird5 = new File("/media/tyler/Tyhous_HD/Music/Bob Dylan - Studio Discography [1962 - 2015]/[1975] - The Basement Tapes/CD 2/09 - Nothing Was Delivered.mp3");
+		
+		File weird6 = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/1. Studio Albums/2002 - You Can Play These Songs With Chords/10 TV Trays.mp3");
+		
 		try {
-			Song s = Song.fetchSong(weird4);
+			Song s = Song.fetchSong(weird6);
 			
 			System.out.println(s.toJson());
+			System.out.println(s.getReleaseGroupInfos());
 
 		} catch(NoSuchElementException e) {}
 

@@ -168,7 +168,13 @@ public class Song {
 
 
 			// This was necessary because some track numbers had letters in them, IE A2
-			Integer trackNo = Integer.valueOf(trackNoStr.replaceAll("[^\\d.]", ""));
+			Integer trackNo = 0;
+			try {
+				trackNo = Integer.valueOf(trackNoStr.replaceAll("[^\\d.]", ""));
+			} catch(NumberFormatException e) {
+				log.error("Track # was " + trackNoStr + " , so changed it to 0");
+				e.printStackTrace();
+			}
 
 			// Only create and add if its a unique releaseGroupMBID
 			if (!releaseGroupMBIDs.contains(cReleaseGroupMBID)) {
