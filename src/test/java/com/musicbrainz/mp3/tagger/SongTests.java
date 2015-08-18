@@ -116,8 +116,10 @@ public class SongTests extends TestCase {
 		
 		File weird6 = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/1. Studio Albums/2002 - You Can Play These Songs With Chords/10 TV Trays.mp3");
 		
+		File weird7 = new File("/media/tyler/Tyhous_HD/Music/Death Cab for Cutie - Discography/3. Live & Bootleg/2000 - Crocodile Cafe (Live)/01 Title Track.mp3");
+		
 		try {
-			Song s = Song.fetchSong(weird6);
+			Song s = Song.fetchSong(weird7);
 			
 			System.out.println(s.toJson());
 			System.out.println(s.getReleaseGroupInfos());

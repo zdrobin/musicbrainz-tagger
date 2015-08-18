@@ -28,7 +28,7 @@ public class Song {
 
 	private Mp3File mp3File;
 
-	private static final Integer DURATION_WINDOW_MS = 15000;
+	private static final Integer DURATION_WINDOW_MS = 25000;
 
 	/**
 	 * Give the prettified json response from musicbrainz
