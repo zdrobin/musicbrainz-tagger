@@ -13,9 +13,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 
 import com.mpatric.mp3agic.Mp3File;
-import com.musicbrainz.mp3.tagger.Tools.ReleaseGroup;
+import com.musicbrainz.mp3.tagger.Tools.ReleaseGroupInfo;
 import com.musicbrainz.mp3.tagger.Tools.Song;
-import com.musicbrainz.mp3.tagger.Tools.Song.ReleaseGroupInfo;
 import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class SongTests extends TestCase {
@@ -31,7 +30,7 @@ public class SongTests extends TestCase {
 	public void testCreateQuery() {
 
 		Mp3File mp3File = Tools.getMp3File(Tools.SAMPLE_SONG);
-		String query = Song.createQueryFromFile(mp3File);
+		String query = song.createQueryFromFile(mp3File);
 		System.out.println(query);
 		assertEquals("http://musicbrainz.org/ws/2/recording/?query=recording:%22Closer%22%20AND%20artist:%22Nine+Inch+Nails%22%20AND%20dur:[365166%20TO%20380166]%20AND%20number:5%20AND%20release:%22The+Downward+Spiral%22&limit=1&fmt=json"
 				,query);
@@ -87,16 +86,10 @@ public class SongTests extends TestCase {
 		System.out.println(song.toJson());
 	}
 
-	public void testYear() {
-		System.out.println(song.getYear());
-		assertEquals("1994", 
-				song.getYear());
-	}
-
-	public void testTrack() {
-		System.out.println(song.getTrackNumber());
-		assertEquals(Integer.valueOf(5), song.getTrackNumber());
-
+	public void testDuration() {
+		assertEquals(Long.valueOf(373133),
+				song.getDuration());
+		
 	}
 
 	public void testNumber() {
