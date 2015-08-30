@@ -1,10 +1,15 @@
 package com.musicbrainz.mp3.tagger;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 
 import com.musicbrainz.mp3.tagger.Tools.Artist;
+import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class ArtistTests extends TestCase {
 	
@@ -19,6 +24,8 @@ public class ArtistTests extends TestCase {
 	public void testJson() {
 		System.out.println(artist.getJson());
 	}
+	
+
 	
 	public void testWikipedia() {
 		assertEquals("http://en.wikipedia.org/wiki/Pearl_Jam", 
@@ -83,6 +90,11 @@ public class ArtistTests extends TestCase {
 	public void testSocialNetwork() {
 		assertEquals("https://plus.google.com/+PearlJam", 
 				artist.getSocialNetwork());
+	}
+	
+	public void testTags() throws JsonGenerationException, JsonMappingException, IOException {
+		System.out.println(Tools.MAPPER.writeValueAsString(artist.getTags()));
+		
 	}
 	
 	

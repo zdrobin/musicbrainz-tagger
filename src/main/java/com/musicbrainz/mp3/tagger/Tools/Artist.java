@@ -1,8 +1,12 @@
 package com.musicbrainz.mp3.tagger.Tools;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** This just performs a lookup of the artist by mbid to get pictures and links of them
  * 
@@ -11,6 +15,10 @@ import org.codehaus.jackson.JsonNode;
  */
 public class Artist {
 	
+	static final Logger log = LoggerFactory.getLogger(Artist.class);
+
+	private String query;
+
 	private JsonNode json;
 
 	public String getJson() {
@@ -27,49 +35,53 @@ public class Artist {
 	}
 
 	private Artist(String mbid) {
-		json = fetchArtistFromMBID(mbid);
+		query = "https://musicbrainz.org/ws/2/artist/" + mbid+ "?inc=url-rels+tags&fmt=json";
+
+		json = fetchArtistFromMBID(query);
 
 		if (json == null) {
 			throw new NoSuchElementException("No Artist found for mbid: " + mbid);
 		}
 	}
-	
+
 	/**
 	 * Here's a sample query for pearl jam:
 	 * https://musicbrainz.org/ws/2/artist/83b9cbe7-9857-49e2-ab8e-b57b01038103?inc=url-rels&fmt=json
 	 * @param mbid
 	 * @return
 	 */
-	private static JsonNode fetchArtistFromMBID(String mbid) {
+	private static JsonNode fetchArtistFromMBID(String query) {
 
-		String query = "https://musicbrainz.org/ws/2/artist/" + mbid+ "?inc=url-rels&fmt=json";
 
-		String res = Tools.httpGet(query);
-		
-		if (res.equals("")) {
+		JsonNode jsonNode = null;
+		try {
+
+
+			String res = Tools.httpGet(query);
+			jsonNode = Tools.jsonToNode(res);
+			return jsonNode;
+
+
+		} catch(NoSuchElementException e) {
+			log.info("query failed: " + query);
 			// Wait some time before retrying
 			try {
-				Thread.sleep(1100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Thread.sleep(1200); // curent ratelimit is 22reqs /20 seconds
+			} catch (InterruptedException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
 			}
-
 			return fetchArtistFromMBID(query);
 		}
-		
-
-		JsonNode jsonNode = Tools.jsonToNode(res);
-
-		return jsonNode;
 	}
-	
+
 	/** For some reason I found many type=discography, so I'd just select the first found
 	 * 
 	 * @return
 	 */
 	private JsonNode findFirstInRelationsArray(String typeSearch) {
 		JsonNode relationsArray = json.get("relations");
-		
+
 		for (int i = 0;;i++) {
 			JsonNode cNode = relationsArray.get(i);
 			if (cNode == null) {
@@ -79,25 +91,25 @@ public class Artist {
 			if (cType.equals(typeSearch)) {
 				return cNode;
 			}
-			
+
 		}
-	
+
 	}
-	
+
 	public String getLink(String typeSearch) {
 		try {
-		String link = findFirstInRelationsArray(typeSearch).get("url").get("resource").asText();
-		
-		return link;
-		
+			String link = findFirstInRelationsArray(typeSearch).get("url").get("resource").asText();
+
+			return link;
+
 		} catch(NoSuchElementException e) {
 			e.printStackTrace();
 			return null;
 		}
-		
-	
+
+
 	}
-	
+
 	/**
 	 * Fetches the coverartarchive.org image url for the release.
 	 * @return image url
@@ -153,6 +165,48 @@ public class Artist {
 	public String getSocialNetwork() {
 		return getLink("social network");
 	}
-	
+
+	public static class Tag {
+		private Integer count;
+		private String name;
+
+		public static Tag create(Integer count, String name) {
+			return new Tag(count, name);
+		}
+
+		private Tag(Integer count, String name) {
+			this.count = count;
+			this.name = name;
+		}
+
+		public Integer getCount() {
+			return count;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+
+	}
+
+	public Set<Tag> getTags() {
+		Set<Tag> tags = new HashSet<Tag>();
+
+		JsonNode tagsNode = json.get("tags");
+
+
+		int i = 0;
+		while (tagsNode.has(i)) {
+			Integer count = tagsNode.get(i).get("count").asInt();
+			String name = tagsNode.get(i).get("name").asText();
+			tags.add(Tag.create(count, name));
+			i++;
+		}
+		
+		return tags;
+
+
+	}
 
 }

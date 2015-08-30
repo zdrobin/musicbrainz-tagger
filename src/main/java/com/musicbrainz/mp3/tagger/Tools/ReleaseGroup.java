@@ -15,7 +15,10 @@ public class ReleaseGroup {
 	
 	static final Logger log = LoggerFactory.getLogger(ReleaseGroup.class);
 	
+	private String query;
+	
 	private JsonNode json;
+	
 
 	public String getJson() {
 		return Tools.nodeToJsonPretty(json);
@@ -31,7 +34,9 @@ public class ReleaseGroup {
 	}
 
 	private ReleaseGroup(String mbid) {
-		json = fetchReleaseGroupFromMBID(mbid);
+		query = "https://musicbrainz.org/ws/2/release-group/" + mbid + "?inc=url-rels&fmt=json";
+
+		json = fetchReleaseGroupFromMBID(query);
 
 		if (json == null) {
 			throw new NoSuchElementException("No Release group found for mbid: " + mbid);
@@ -44,28 +49,30 @@ public class ReleaseGroup {
 	 * @param mbid
 	 * @return
 	 */
-	private static JsonNode fetchReleaseGroupFromMBID(String mbid) {
+	private static JsonNode fetchReleaseGroupFromMBID(String query) {
 
-		String query = "https://musicbrainz.org/ws/2/release-group/" + mbid + "?inc=url-rels&fmt=json";
+		JsonNode jsonNode = null;
+		try {
 
-		String res = Tools.httpGet(query);
-		
-		if (res.equals("")) {
+
+			String res = Tools.httpGet(query);
+			jsonNode = Tools.jsonToNode(res);
+			return jsonNode;
+
+
+		} catch(NoSuchElementException e) {
+			log.info("query failed: " + query);
 			// Wait some time before retrying
 			try {
-				
-				Thread.sleep(1100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Thread.sleep(1200); // curent ratelimit is 22reqs /20 seconds
+			} catch (InterruptedException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
 			}
-
 			return fetchReleaseGroupFromMBID(query);
 		}
 		
 
-		JsonNode jsonNode = Tools.jsonToNode(res);
-
-		return jsonNode;
 	}
 	
 	/** 
