@@ -61,7 +61,16 @@ public abstract class SongFunctions {
 	}
 
 	protected JsonNode getFirstRecording() {
-		return json.get("recordings").get(0);
+		JsonNode recording = null;
+
+		try {
+			recording = json.get("recordings").get(0);
+
+		} catch(NullPointerException e) {
+			recording = json;
+		}
+
+		return recording;
 	}
 
 	/**
@@ -122,59 +131,7 @@ public abstract class SongFunctions {
 	 * Fetches all the release groups associated with this song
 	 * @return
 	 */
-	public Set<ReleaseGroupInfo> getReleaseGroupInfos() {
-
-		Set<ReleaseGroupInfo> releaseGroupInfos = new LinkedHashSet<>();
-		Set<String> releaseGroupMBIDs = new LinkedHashSet<>(); // for uniqueness
-		JsonNode releases = getFirstRecording().get("releases");
-
-		int i = 0;
-		while (releases.has(i)) {
-			String cReleaseGroupMBID = releases.get(i).get("release-group").get("id").asText();
-			Integer discNo = releases.get(i).get("media").get(0).get("position").asInt();
-			String trackNoStr = releases.get(i).get("media").get(0).get("track").get(0).get("number").asText();
-
-			String primaryType = (releases.get(i).get("release-group").get("primary-type") != null) ?
-					releases.get(i).get("release-group").get("primary-type").asText() : null;
-
-					Set<String> secondaryTypes = null;
-
-					JsonNode secondaryTypesJson = releases.get(i).get("release-group").get("secondary-types");
-					if (secondaryTypesJson != null) {
-						secondaryTypes = new LinkedHashSet<String>();
-						int j = 0;
-						while (secondaryTypesJson.has(j)) {
-							secondaryTypes.add(secondaryTypesJson.get(j++).asText());
-						}
-					}
-
-
-					// This was necessary because some track numbers had letters in them, IE A2
-					Integer trackNo = 0;
-					try {
-						trackNo = Integer.valueOf(trackNoStr.replaceAll("[^\\d.]", ""));
-					} catch(NumberFormatException e) {
-						log.error("Track # was " + trackNoStr + " , so changed it to 0");
-						e.printStackTrace();
-					}
-
-					// Only create and add if its a unique releaseGroupMBID
-					if (!releaseGroupMBIDs.contains(cReleaseGroupMBID)) {
-						ReleaseGroupInfo releaseGroupInfo = ReleaseGroupInfo.create(
-								cReleaseGroupMBID, trackNo, discNo, primaryType, secondaryTypes);
-						releaseGroupInfos.add(releaseGroupInfo);
-						releaseGroupMBIDs.add(cReleaseGroupMBID);
-					}
-
-					i++;
-		}
-
-		return releaseGroupInfos;
-
-
-	}
-
-
+	public abstract Set<ReleaseGroupInfo> getReleaseGroupInfos();
 
 
 	private JsonNode getFirstArtistCredit() {
@@ -195,6 +152,14 @@ public abstract class SongFunctions {
 	 */
 	public String getArtist() {
 		return getFirstArtistCredit().get("name").asText();
+	}
+
+	/**
+	 * Give the prettified json response from musicbrainz
+	 * @return json
+	 */
+	public String toJson() {
+		return Tools.nodeToJsonPretty(json);
 	}
 
 

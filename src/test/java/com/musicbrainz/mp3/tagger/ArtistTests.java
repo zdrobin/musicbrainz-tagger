@@ -94,7 +94,6 @@ public class ArtistTests extends TestCase {
 	
 	public void testTags() throws JsonGenerationException, JsonMappingException, IOException {
 		System.out.println(Tools.MAPPER.writeValueAsString(artist.getTags()));
-		
 	}
 	
 	

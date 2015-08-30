@@ -25,13 +25,7 @@ public class Song extends SongFunctions {
 
 	private static final Integer DURATION_WINDOW_MS = 25000;
 
-	/**
-	 * Give the prettified json response from musicbrainz
-	 * @return json
-	 */
-	public String toJson() {
-		return Tools.nodeToJsonPretty(json);
-	}
+
 
 	/**
 	 * Looks up the musicbrainz recording from a given music file, using 6 pieces of info:<br>
@@ -228,6 +222,59 @@ public class Song extends SongFunctions {
 		String query = mbq.createQuery();
 
 		return query;
+	}
+
+	@Override
+	public Set<ReleaseGroupInfo> getReleaseGroupInfos() {
+
+		Set<ReleaseGroupInfo> releaseGroupInfos = new LinkedHashSet<>();
+		Set<String> releaseGroupMBIDs = new LinkedHashSet<>(); // for uniqueness
+		JsonNode releases = getFirstRecording().get("releases");
+
+		int i = 0;
+		while (releases.has(i)) {
+			String cReleaseGroupMBID = releases.get(i).get("release-group").get("id").asText();
+			Integer discNo = releases.get(i).get("media").get(0).get("position").asInt();
+			String trackNoStr = releases.get(i).get("media").get(0).get("track").get(0).get("number").asText();
+
+			String primaryType = (releases.get(i).get("release-group").get("primary-type") != null) ?
+					releases.get(i).get("release-group").get("primary-type").asText() : null;
+
+					Set<String> secondaryTypes = null;
+
+					JsonNode secondaryTypesJson = releases.get(i).get("release-group").get("secondary-types");
+					if (secondaryTypesJson != null) {
+						secondaryTypes = new LinkedHashSet<String>();
+						int j = 0;
+						while (secondaryTypesJson.has(j)) {
+							secondaryTypes.add(secondaryTypesJson.get(j++).asText());
+						}
+					}
+
+
+					// This was necessary because some track numbers had letters in them, IE A2
+					Integer trackNo = 0;
+					try {
+						trackNo = Integer.valueOf(trackNoStr.replaceAll("[^\\d.]", ""));
+					} catch(NumberFormatException e) {
+						log.error("Track # was " + trackNoStr + " , so changed it to 0");
+						e.printStackTrace();
+					}
+
+					// Only create and add if its a unique releaseGroupMBID
+					if (!releaseGroupMBIDs.contains(cReleaseGroupMBID)) {
+						ReleaseGroupInfo releaseGroupInfo = ReleaseGroupInfo.create(
+								cReleaseGroupMBID, trackNo, discNo, primaryType, secondaryTypes);
+						releaseGroupInfos.add(releaseGroupInfo);
+						releaseGroupMBIDs.add(cReleaseGroupMBID);
+					}
+
+					i++;
+		}
+
+		return releaseGroupInfos;
+
+
 	}
 	
 	
