@@ -70,7 +70,7 @@ artist.getYoutube();
 artist.getImage();
 artist.getSoundCloud();
 artist.getSocialNetwork();
-
+```
 
 ## Bugs and feature requests
 Have a bug or a feature request? If your issue isn't [already listed](https://github.com/tchoulihan/musicbrainz-tagger/issues/), then open a [new issue here](https://github.com/tchoulihan/musicbrainz-tagger/issues/new).

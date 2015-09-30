@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.tchoulihan</groupId>
 	<artifactId>musicbrainz-tagger</artifactId>
-	<version>1.2.7</version>
+	<version>1.2.8</version>
 	<name>Musicbrainz tagger</name>
 	<description>Musicbrainz audio file tagger</description>
 

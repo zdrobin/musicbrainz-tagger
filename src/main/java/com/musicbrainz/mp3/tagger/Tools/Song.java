@@ -197,12 +197,16 @@ public class Song extends SongFunctions {
 		String number = id3.getTrack();
 		if (number != null) {
 
-			// Check for 5/14 or a division sign, or a zero
+			// Check for 5/14 or a division sign, or a negative -1
 
 			if (number.contains("/")) {
 				number = number.split("/")[0];
 			}
 
+			if (number.contains("-")) {
+				throw new NoSuchElementException("Track # contained an illegal character, " + number);
+			}
+			
 
 			b.number(Integer.parseInt(number));
 		}
