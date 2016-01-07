@@ -109,6 +109,10 @@ public class Artist {
 
 
 	}
+	
+	public String getName() {
+		return json.get("name").asText();
+	}
 
 	/**
 	 * Fetches the coverartarchive.org image url for the release.

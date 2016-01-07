@@ -26,6 +26,9 @@ public class ArtistTests extends TestCase {
 	}
 	
 
+	public void testName() {
+		assertEquals("Pearl Jam", artist.getName());
+	}
 	
 	public void testWikipedia() {
 		assertEquals("http://en.wikipedia.org/wiki/Pearl_Jam", 
