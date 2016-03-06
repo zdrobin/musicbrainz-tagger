@@ -30,6 +30,7 @@ public abstract class SongFunctions {
 
 
 			String res = Tools.httpGet(query);
+			//			log.info(res);
 			jsonNode = Tools.jsonToNode(res);
 			return jsonNode;
 
@@ -78,7 +79,11 @@ public abstract class SongFunctions {
 	 * @return musicbrainz-MBID
 	 */
 	public String getRecordingMBID() {
-		return getFirstRecording().get("id").asText().toLowerCase();		
+		try {
+			return getFirstRecording().get("id").asText().toLowerCase();	
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	/**
@@ -86,16 +91,28 @@ public abstract class SongFunctions {
 	 * @return title
 	 */
 	public String getRecording() {
-		return getFirstRecording().get("title").asText();		
+		try {
+			return getFirstRecording().get("title").asText();
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 
 	public Long getDuration() {
-		return getFirstRecording().get("length").asLong();	
+		try {
+			return getFirstRecording().get("length").asLong();	
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	protected JsonNode getFirstRelease() {
-		return getFirstRecording().get("releases").get(0);
+		try {
+			return getFirstRecording().get("releases").get(0);
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	/**
@@ -103,7 +120,11 @@ public abstract class SongFunctions {
 	 * @return musicbrainz-MBID
 	 */
 	public String getReleaseMBID() {
-		return getFirstRelease().get("id").asText().toLowerCase();
+		try {
+			return getFirstRelease().get("id").asText().toLowerCase();
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 
@@ -112,11 +133,19 @@ public abstract class SongFunctions {
 	 * @return title
 	 */
 	public String getRelease() {
-		return getFirstRelease().get("title").asText();
+		try {
+			return getFirstRelease().get("title").asText();
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	protected JsonNode getFirstReleaseGroup() {
-		return getFirstRecording().get("releases").get(0).get("release-group");
+		try {
+			return getFirstRecording().get("releases").get(0).get("release-group");
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	/**
@@ -124,7 +153,11 @@ public abstract class SongFunctions {
 	 * @return musicbrainz-MBID
 	 */
 	public String getReleaseGroupMBID() {
-		return getFirstReleaseGroup().get("id").asText().toLowerCase();
+		try {
+			return getFirstReleaseGroup().get("id").asText().toLowerCase();
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	/**
@@ -135,7 +168,11 @@ public abstract class SongFunctions {
 
 
 	private JsonNode getFirstArtistCredit() {
-		return getFirstRecording().get("artist-credit").get(0).get("artist");
+		try {
+			return getFirstRecording().get("artist-credit").get(0).get("artist");
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	/**
@@ -143,7 +180,11 @@ public abstract class SongFunctions {
 	 * @return musicbrainz-MBID
 	 */
 	public String getArtistMBID() {
-		return getFirstArtistCredit().get("id").asText().toLowerCase();
+		try {
+			return getFirstArtistCredit().get("id").asText().toLowerCase();
+		} catch(NullPointerException e) {
+			throw new SongNotFoundException();
+		}
 	}
 
 	/**

@@ -22,6 +22,7 @@ public class SongMBIDTests extends TestCase {
 	public void setUp() {
 		song = SongMBID.fetchSong("13dd61c7-ce73-4e97-9f0c-9f0e53144411");
 	}
+	
 
 
 	public void testCreateQuery() {

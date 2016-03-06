@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 
 import com.musicbrainz.mp3.tagger.Tools.Artist;
+import com.musicbrainz.mp3.tagger.Tools.SongMBID;
 import com.musicbrainz.mp3.tagger.Tools.Tools;
 
 public class ArtistTests extends TestCase {
@@ -19,6 +20,14 @@ public class ArtistTests extends TestCase {
 	@Before
 	public void setUp() {		
 		artist = Artist.fetchArtist(pearlJamMbid);
+	}
+	
+	public void testDerp() {
+		
+		artist = Artist.fetchArtist("7b0a63b2-b8e8-490e-b724-1d30cb5edfe3");
+		
+		System.out.println(artist.getName());
+		
 	}
 	
 	public void testJson() {

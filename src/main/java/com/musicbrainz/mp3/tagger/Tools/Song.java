@@ -25,7 +25,7 @@ public class Song extends SongFunctions {
 
 	private static final Integer DURATION_WINDOW_MS = 25000;
 
-
+	private Boolean found;
 
 	/**
 	 * Looks up the musicbrainz recording from a given music file, using 6 pieces of info:<br>
@@ -52,11 +52,13 @@ public class Song extends SongFunctions {
 			json = fetchMBRecordingJSONFromQuery(query);
 
 			if (getFirstRecording() == null) {
+				found = false;
 				throw new NoSuchElementException("Could not find recording in the MusicBrainz Database.\n"
 						+ "query: " + query);
-
+			} else {
+				found = true;
 			}
-		} 
+		}
 		// Happens if there's a null query
 		catch(NoSuchElementException e) {
 			e.printStackTrace();
@@ -279,6 +281,10 @@ public class Song extends SongFunctions {
 		return releaseGroupInfos;
 
 
+	}
+	
+	public Boolean isFound() {
+		return found;
 	}
 	
 	
