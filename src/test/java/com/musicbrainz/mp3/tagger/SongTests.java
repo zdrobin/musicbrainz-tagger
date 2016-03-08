@@ -11,11 +11,6 @@ import junit.framework.TestCase;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 
 import com.mpatric.mp3agic.Mp3File;
 import com.musicbrainz.mp3.tagger.Tools.ReleaseGroupInfo;
@@ -37,9 +32,7 @@ public class SongTests extends TestCase {
 
 		song = Song.fetchSong(Tools.SAMPLE_SONG_2);
 
-		if (song.isFound()) {
-			song.getArtist();
-		}
+		assertFalse(song.isFound());
 
 	}
 
@@ -49,9 +42,9 @@ public class SongTests extends TestCase {
 
 		try {
 			song = Song.fetchSong(Tools.SAMPLE_SONG_2);
-			song.getRelease();
+			song.getArtist();
 
-			fail( "My method didn't throw when I expected it to" );
+			fail("Exception wasn't thrown");
 		} catch(SongNotFoundException e) {}
 
 	}
